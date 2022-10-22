@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}| Recipes{% endblock title %}
+{% block content %}
+    <section>
+        <nav class="navbar justify-content-between">
+            <h4>Cooking Recipes</h4>
+            <a href="{% url 'recipe-create' %}" class="btn btn-success">Create New Recipe</a>
+        </nav>
+        {% if not recipes %}
+            <h1>There is no recipes at this moment. Stay tuned!</h1>
+        {% else %}
+            <table class="table table-bordered mt-2 table-light">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for recipe in recipes %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter|normalize_table_number:page_obj.number }}</th>
+                        <td><a href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a>
+                        </td>
+                        <td>
+                            {% if recipe.image %}
+                                <img src="{{ recipe.image.thumbnail.100x100 }}">
+                            {% else %}
+                                <span>No image provided</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <p>{{ recipe.description|truncatechars:50 }}
+                                {% if recipe.description|length > 50 %}
+                                    <a href="{% url 'recipe-detail' recipe.id %}">read more</a>
+                                {% endif %}
+                            </p>
+                        </td>
+                        <td>{{ recipe.created_at|date:'d-m-Y' }}</td>
+                        <td><a href="{% url 'recipe-update' recipe.id %}"
+                               class="btn btn-primary">Edit recipe</a>
+                            <form id="form-delete-recipe-{{ recipe.id }}" method="POST"
+                                  action="{% url 'recipe-delete' recipe.id %}" hidden>
+                                {% csrf_token %}
+                                <input type="submit">
+                            </form>
+                            <button class="btn btn-danger button-delete-recipe"
+                                data-recipe-id="{{ recipe.id }}">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    {% include 'partials/pagination.html' %}
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $('.button-delete-recipe').on('click', function () {
+            const recipeId = $(this).data('recipe-id');
+            $('#form-delete-recipe-'+recipeId).submit();
+        });
+    </script>
+{% endblock %}

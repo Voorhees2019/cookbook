@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}| Login{% endblock %}
+
+{% block content %}
+    <div class="row align-items-center justify-content-center" style="height: 70vh">
+        <div class="col-lg-8 text-center">
+            <div class="d-flex flex-column justify-content-center align-items-center border">
+                <h1 class="fw-normal my-5">Login</h1>
+
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="username" placeholder="Username">
+                        {% for error in form.username.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                        {% for error in form.password.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-5">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}| Users{% endblock title %}
+{% block content %}
+    <section>
+        <h4 class="my-4">List of users the bot is familiar with</h4>
+        {% if not profiles %}
+            <h1>There are no users using the bot at this moment. Stay tuned!</h1>
+        {% else %}
+            <table class="table table-bordered mt-2 table-light">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Telegram_ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Date joined</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for profile in profiles %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter|normalize_table_number:page_obj.number }}</th>
+                        <td>{{ profile.external_id }}</td>
+                        <td>{% if profile.username %}
+                                @{{ profile.username }}
+                            {% else %}
+                                User has not set the username yet
+                            {% endif %}</td>
+                        <td>{{ profile.name }}</td>
+                        <td>{{ profile.get_gender_display }}</td>
+                        <td>{{ profile.created_at|date:'d-m-Y' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    {% include 'partials/pagination.html' %}
+{% endblock %}

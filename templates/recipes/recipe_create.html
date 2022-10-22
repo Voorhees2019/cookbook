@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if viewtype == 'create' %}
+        | Create Recipe
+    {% elif viewtype == 'update' %}
+        | Update Recipe
+    {% endif %}
+{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex flex-column">
+                    <h1 class="fw-normal my-4 text-center">
+                        {% if viewtype == 'create' %}
+                            Create a new recipe
+                        {% elif viewtype == 'update' %}
+                            Update the recipe
+                        {% endif %}
+                         </h1>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                {% if viewtype == 'create' %}
+                                    Create
+                                {% elif viewtype == 'update' %}
+                                    Update
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
